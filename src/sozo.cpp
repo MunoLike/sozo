@@ -1,40 +1,117 @@
-//============================================================================
-// Name        : sozo.cpp
-// Author      : haruki
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
 
-#include <iostream>
 #include <stdio.h>
+#include <unistd.h>
+#
 
-#include "motors/motor.hpp"
-#include "test/misc.hpp"
+#define gpio0 60
+#define gpio1 3
+#define gpio2 49
+#define gpio3 115
 
-using namespace std;
 
 int main() {
-	init_pwm(0);
-	init_pwm(1);
+	int line_sensors[4];
+	FILE *fp,*fp0,*fp1,*fp2,*fp3;
+	int in1=0;
+	char path0[100],path1[100],path2[100],path3[100];
 
-	while(true){
-		run_pwm(0,10000000,1);//追加
-		run_pwm(1,10000000,1);
+		printf("GPIO番号： %d %d %d %d\n", gpio0,gpio1,gpio2,gpio3);
+
+///////////////////////////////////////////////////////////////////////
+
+		//gpioの有効化
+		fp =fopen("/sys/class/gpio/export","w");
+		fprintf(fp, "%d", gpio0);
+		fclose(fp);
+
+		//gpioを出力い設定
+		sprintf(path0, "/sys/class/gpio/gpio%d/direction",gpio0);
+		fp = fopen(path0,"w");
+		fprintf(fp, "in");
+		fclose(fp);
+
+		//gpio出力用valueファイル名をpathに格納
+		sprintf(path0, "/sys/class/gpio/gpio%d/value",gpio0);
+
+///////////////////////////////////////////////////////////////////////
+
+		fp =fopen("/sys/class/gpio/export","w");
+		fprintf(fp, "%d", gpio1);
+		fclose(fp);
+
+		sprintf(path1, "/sys/class/gpio/gpio%d/direction",gpio1);
+		fp = fopen(path1,"w");
+		fprintf(fp, "in");
+		fclose(fp);
+
+		sprintf(path1, "/sys/class/gpio/gpio%d/value",gpio1);
+
+///////////////////////////////////////////////////////////////////////
+
+		fp =fopen("/sys/class/gpio/export","w");
+		fprintf(fp, "%d", gpio2);
+		fclose(fp);
+
+		sprintf(path2, "/sys/class/gpio/gpio%d/direction",gpio2);
+		fp = fopen(path2,"w");
+		fprintf(fp, "in");
+		fclose(fp);
+
+		sprintf(path2, "/sys/class/gpio/gpio%d/value",gpio2);
+
+////////////////////////////////////////////////////////////////////////
+
+		fp =fopen("/sys/class/gpio/export","w");
+		fprintf(fp, "%d", gpio3);
+		fclose(fp);
+
+		sprintf(path3, "/sys/class/gpio/gpio%d/direction",gpio3);
+		fp = fopen(path3,"w");
+		fprintf(fp, "in");
+		fclose(fp);
+
+		sprintf(path3, "/sys/class/gpio/gpio%d/value",gpio3);
+
+///////////////////////////////////////////////////////////////////////
+
+		printf("%s\n", path0);
+		while(1)
+		{
+
+			fp0 = fopen(path0, "r");
+			fp1 = fopen(path1, "r");
+			fp2 = fopen(path2, "r");
+			fp3 = fopen(path3, "r");
+			//valueファイルを開き，出力値を書き込む
+
+			fscanf(fp0, "%d",&line_sensors[0]);
 
 
-		printf("run\n");
+			fscanf(fp1, "%d",&line_sensors[1]);
 
-		if(kbhit()){
-			if(getchar()=='q')
-			break;
+
+			fscanf(fp2, "%d",&line_sensors[2]);
+
+
+			fscanf(fp3, "%d",&line_sensors[3]);
+
+	        printf("%d %d %d %d\r",line_sensors[0],line_sensors[1],line_sensors[2],line_sensors[3]);
+
+	        fclose(fp0);
+	        fclose(fp1);
+	        fclose(fp2);
+	        fclose(fp3);
 		}
-	}
 
-	run_pwm(0,0,0);
-	run_pwm(1,0,0);
-	close_pwm(0);
-	close_pwm(1);
 
-	return 0;
+		//valueファイルに，出力値0を書き込みGPIOをLOWにする．
+		in1=0;
+		fp = fopen(path1, "w");
+		fprintf(fp, "%d",in1);
+		fclose(fp);
+		usleep(200);
+
+		printf("プログラム終了\n");
+
+		return 0;
 }
