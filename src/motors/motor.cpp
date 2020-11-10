@@ -20,9 +20,9 @@
 
 //各自の使用するボードで変更
 /**************************/
-#define OCP_NUM 3 //ocp.▲の▲に該当する番号
-#define PWM_PERIOD 10000000
-#define BONE_CAPEMGR_NUM 9 //bone_capemgr.●の●に該当
+const int OCP_NUM = 3; //ocp.▲の▲に該当する番号
+const int PWM_PERIOD = 10000000;
+const int BONE_CAPEMGR_NUM = 9; //bone_capemgr.●の●に該当
 /**************************/
 
 //各自の接続に応じて変更
@@ -31,6 +31,8 @@ char PIN_PWM[2][7]={{"P9_14"},{"P9_22"}}; //PWM有効化後の番号
 int pwm_pin_num[2]={15,16}; //PWMに使用するのBBBピン番号
 int motor_gpio_num[2][2]={{61,60},{65,46}}; //モータで使用するGPIO番号
 /*************************/
+
+
 
 //PWM初期化関数
 void init_pwm(int motor_num){
