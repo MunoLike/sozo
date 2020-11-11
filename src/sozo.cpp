@@ -9,7 +9,7 @@
 #include <iostream>
 #include <stdio.h>
 
-#include "motors/motor.hpp"
+#include "motors/Motor.hpp"
 #include "test/misc.hpp"
 
 using namespace std;
