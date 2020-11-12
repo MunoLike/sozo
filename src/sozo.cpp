@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#
 
 #define gpio0 60
 #define gpio1 3
