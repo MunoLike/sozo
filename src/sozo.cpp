@@ -8,9 +8,10 @@
 #define gpio2 49
 #define gpio3 115
 
+int line_sensors[4];
 
 int main() {
-	int line_sensors[4];
+
 	FILE *fp,*fp0,*fp1,*fp2,*fp3;
 	int in1=0;
 	char path0[100],path1[100],path2[100],path3[100];
