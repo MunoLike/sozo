@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "../values.h"
-#include "linetrace.h"
+#include "../variable.hpp"
+#include "linetrace.hpp"
 
 #define gpio0 60
 #define gpio1 3

@@ -1,9 +1,9 @@
 
 #include <stdio.h>
 #include <unistd.h>
-#include "linetrace/linetrace.h"
-#include "supersonic/supersonic.h"
-#include "values.h"
+#include "linetrace/linetrace.hpp"
+#include "supersonic/supersonic.hpp"
+#include "variable.hpp"
 
 int main() {
 	init_linetrace();

@@ -10,10 +10,10 @@
 #include <poll.h>
 #include <time.h>
 
-#include "../values.h"
-#include "supersonic.h"
+#include "../variable.hpp"
+#include "supersonic.hpp"
 
-#define gpio 27;
+#define gpio 27;//P8_17
 
 
 //gpioの有効化関数
@@ -115,7 +115,6 @@ void read_supersonic(){
 		usleep(10000);
 	}
 	distance_front=SimSelSort(distance_sample);
-	printf("Distance=%d[mm]\n", SimSelSort(distance_sample));
 	close(fd);
 }
 
