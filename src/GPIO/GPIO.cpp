@@ -10,11 +10,13 @@
 
 namespace GPIO {
 
+
 //key: give port Key
 //ex) GPIO::GPIO led1("P9_12")
 GPIO::GPIO(const char *key) {
   auto gpc = GPIOConst::getInstance();
   this->gpio_num = gpc->getGpioByKey(key);
+  this->exportPin();
 }
 
 GPIO::~GPIO() {
