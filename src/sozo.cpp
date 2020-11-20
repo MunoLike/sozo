@@ -7,6 +7,8 @@
 //============================================================================
 
 #include <iostream>
+#include <string>
+#include <fmt/core.h>
 #include <stdio.h>
 
 #include "motors/Motor.hpp"
@@ -18,9 +20,9 @@
 using namespace std;
 
 int main() {
-	//TODO: give them arguments
-	Motor right_motor;
-	Motor left_motor;
+  //TODO: give them arguments
+//  Motor right_motor();
+//  Motor left_motor();
 
 //	init_pwm(0);
 //	init_pwm(1);
@@ -43,6 +45,7 @@ int main() {
 //	close_pwm(0);
 //	close_pwm(1);
 
+  fmt::print("Don't {}\n", "panic");
 
-	return 0;
+  return 0;
 }

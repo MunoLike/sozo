@@ -7,6 +7,7 @@
 
 #ifndef GPIO_GPIO_HPP_
 #define GPIO_GPIO_HPP_
+#include <string>
 
 #include "GPIOManager.h"
 
@@ -14,7 +15,7 @@ namespace GPIO {
 
 class GPIO {
  public:
-  GPIO(const char *key);
+  GPIO(const std::string key);
   virtual ~GPIO();
 
   int exportPin();
