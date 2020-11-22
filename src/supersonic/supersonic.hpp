@@ -5,10 +5,10 @@
  *      Author: haruk
  */
 
+#ifndef SUPERSONIC_SUPERSONIC_HPP_
+#define SUPERSONIC_SUPERSONIC_HPP_
 
-#ifndef SUPERSONIC_SUPERSONIC_H_
-#define SUPERSONIC_SUPERSONIC_H_
-
+#include <atomic>
 #include <unistd.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -21,12 +21,9 @@
 #include <poll.h>
 #include <time.h>
 
+extern std::atomic<int> distance_front;
+
 void init_supersonic();
 void read_supersonic();
 
-
-int distance_front;
-
-
-
-#endif /* SUPERSONIC_SUPERSONIC_H_ */
+#endif /* SUPERSONIC_SUPERSONIC_HPP_ */

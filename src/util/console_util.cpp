@@ -10,8 +10,10 @@
 #include <fcntl.h>
 #include <stdio.h>
 
+#include "console_util.hpp"
+
 namespace utils {
-int kbhit(void) {
+char kbhit(void) {
   struct termios oldt, newt;
   int ch;
   int oldf;

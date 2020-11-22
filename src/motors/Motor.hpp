@@ -29,6 +29,7 @@ class Motor {
   void run_pwm(int period, int duty, DRIVE_MODE drive_mode);
 
  private:
+  std::string pwm_pin_name;
   GPIO::GPIO pwm_out;
   GPIO::GPIO dir_cont[2];
   int period, duty;

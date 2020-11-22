@@ -14,6 +14,7 @@
 
 Motor::Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2)
     :
+    pwm_pin_name(pwmpin),
     pwm_out(GPIO::GPIO(pwmpin)),
     dir_cont { GPIO::GPIO(dir_cont1), GPIO::GPIO(dir_cont2) },
     period(0),
@@ -71,7 +72,7 @@ void Motor::run_pwm(int period, int duty, DRIVE_MODE drive_mode) {
   this->period = period;
 
   std::string pwm_setting_dir = utils::unclear_pathto_abs(
-      fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwmpin_name));
+      fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwm_pin_name));
 
   std::ofstream pwm_period(pwm_setting_dir + "period");
   pwm_period << period;
@@ -93,7 +94,7 @@ Motor::~Motor() {
   this->run_pwm(0, 0, DRIVE_MODE::FREE);
 
   std::string pwm_setting_dir = utils::unclear_pathto_abs(
-      fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwmpin_name));
+      fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwm_pin_name));
 
   std::ofstream pwm_duty(pwm_setting_dir + "duty");
   pwm_duty << 0;
