@@ -10,6 +10,7 @@
 #include <string>
 #include <fmt/core.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "motors/Motor.hpp"
 #include "util/console_util.hpp"
@@ -28,6 +29,7 @@ int main() {
   fmt::print("running!\n");
 
   while (true) {
+
     if (utils::kbhit()) {
       if (getchar() == 'q')
         break;

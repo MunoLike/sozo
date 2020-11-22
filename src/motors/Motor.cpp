@@ -14,7 +14,6 @@
 
 Motor::Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2)
     :
-    pwmpin_name(pwmpin),
     pwm_out(GPIO::GPIO(pwmpin)),
     dir_cont { GPIO::GPIO(dir_cont1), GPIO::GPIO(dir_cont2) },
     period(0),
