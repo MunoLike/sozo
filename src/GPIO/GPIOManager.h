@@ -24,11 +24,9 @@
 #ifndef BEAGLEBONEBLACK_GPIO_SRC_GPIO_GPIOMANAGER_H_
 #define BEAGLEBONEBLACK_GPIO_SRC_GPIO_GPIOMANAGER_H_
 
-
 #ifdef QBEAGLEBONEBLACKGPIO_LIBRARY
     #include <qbeagleboneblackgpio_global.h>
 #endif
-
 
 #define SYSFS_GPIO_DIR "/sys/class/gpio"
 #include <vector>
@@ -53,11 +51,11 @@ enum EDGE_VALUE {
 };
 
 class
-        #ifdef QBEAGLEBONEBLACKGPIO_LIBRARY
+#ifdef QBEAGLEBONEBLACKGPIO_LIBRARY
         QBEAGLEBONEBLACKGPIOSHARED_EXPORT
         #endif
 
-        GPIOManager {
+GPIOManager {
  public:
   GPIOManager();
   virtual ~GPIOManager();
@@ -75,7 +73,7 @@ class
   int countExportedPins();
   void clean();
  private:
-  static GPIOManager* instance;
+  static GPIOManager *instance;
   std::vector<unsigned int> exportedPins;
 };
 

@@ -12,40 +12,26 @@
 #include <stdio.h>
 
 #include "motors/Motor.hpp"
-#include "test/misc.hpp"
-
-#define OCP_NUM 3
-#define BONE_CAPE_MGR 9
+#include "util/console_util.hpp"
 
 using namespace std;
 
 int main() {
-  //TODO: give them arguments
-//  Motor right_motor();
-//  Motor left_motor();
+  const int PERIOD = 10000000;
 
-//	init_pwm(0);
-//	init_pwm(1);
-//
-//	while(true){
-//		run_pwm(0,10000000,1);//追加
-//		run_pwm(1,10000000,1);
-//
-//
-//		printf("run\n");
-//
-//		if(kbhit()){
-//			if(getchar()=='q')
-//			break;
-//		}
-//	}
-//
-//	run_pwm(0,0,0);
-//	run_pwm(1,0,0);
-//	close_pwm(0);
-//	close_pwm(1);
+  Motor left_m("P9_14", "P8_26", "P9_12");
+  Motor right_m("P9_22", "P8_18", "P8_16");
 
-  fmt::print("Don't {}\n", "panic");
+  left_m.run_pwm(PERIOD, PERIOD / 2, DRIVE_MODE::FORWARD);
+  right_m.run_pwm(PERIOD, PERIOD / 2, DRIVE_MODE::FORWARD);
 
+  fmt::print("running!\n");
+
+  while (true) {
+    if (utils::kbhit()) {
+      if (getchar() == 'q')
+        break;
+    }
+  }
   return 0;
 }
