@@ -2,7 +2,7 @@
 
 #include "supersonic.hpp"
 
-#define gpio 27
+#define gpio 27//P8_17
 
 std::atomic<int> distance_front;
 
@@ -33,6 +33,27 @@ int gpio_open(int n, char *file, int flag) {
   return fd;
 }
 
+/* n 個のデータの単純選択ソートを行う */
+void SimSelSort(int num[ ], int n)
+{
+    int i, j, k, min, temp;
+
+    for (i = 0; i < n - 1; i++) {
+        min = num[i];                 /* i 番目の要素を暫定的に最小値とし */
+        k = i;                        /* 添字を保存 */
+        for (j = i + 1; j < n; j++) {
+            if (num[j] < min) {       /* より小さい値が現れたら */
+                min = num[j];         /* 最小値の入れ替え */
+                k = j;                /* 添字を保存 */
+            }
+        }                             /* このループを抜けるとk に最小値の添字が入っている */
+        temp = num[i];                /* i 番目の要素と最小値の交換 */
+        num[i] = num[k];
+        num[k] = temp;
+    }
+    distance_front=num[3];
+}
+
 //パルスのON時間を時刻から算出する関数 単位:micro sec
 //timespec構造体の構造はtv_secに秒,tv_nsecに秒未満の時間をnano秒で表す
 
@@ -56,7 +77,7 @@ void init_supersonic() {
 }
 
 void read_supersonic() {
-
+  int distance[7];
   int fd;
   float Ion;
   int ret;
@@ -69,6 +90,7 @@ void read_supersonic() {
   pfd.fd = fd;  //監視するファイルを設定
   pfd.events = POLLPRI;  //監視する通知を設定
   while (1) {
+	for (int i=0;i<7;i++){
     lseek(fd, 0, SEEK_SET);  //読み取り位置を先頭に設定
     ret = poll(&pfd, 1, -1);  //通知を監視
     read(fd, &c, 1);  //通知状態を読み込む
@@ -84,8 +106,10 @@ void read_supersonic() {
     } else
       continue;
     Ion = RC_LAP(now, origin);  //パルスのON時間を算出
-    distance_front = Ion / 61 * 10;
+    distance[i] = Ion / 61 * 10;
     usleep(50000);
+	}
+	SimSelSort(distance,7);
   }
 }
 

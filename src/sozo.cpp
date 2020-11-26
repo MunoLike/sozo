@@ -21,6 +21,7 @@ int main() {
            distance_front.load());
 
     if (utils::kbhit() == 'q') {
+
       break;
     }
   }
