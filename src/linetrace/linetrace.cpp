@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define gpio0 60
-#define gpio1 3
-#define gpio2 49
-#define gpio3 115
+#define gpio0 60//P9_12
+#define gpio1 3//P9_21
+#define gpio2 49//P9_23
+#define gpio3 115//P9_27
 
 int line_sensors[4];
 
