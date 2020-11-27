@@ -11,7 +11,7 @@
 #define PERIOD (10000000)
 
 void turn_control() {
-  int flag = 0;
+  int flag = 0, randam;
 
   while (flag == 1) {
     if (line_sensors[0] == 0 || line_sensors[3] == 0) {
@@ -33,6 +33,16 @@ void turn_control() {
   }
   if (distance_front <= 50) {
     turn_flag[1] = 1;
+  }
+
+  randam = rand() % 3;
+  flag = 0;
+  while (flag == 1) {
+    if (line_sensors[randam] == 0) {
+      randam = rand() % 3;
+    } else {
+      flag = 1;
+    }
   }
 
   flag = 0;
