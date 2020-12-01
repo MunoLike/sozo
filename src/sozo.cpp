@@ -60,12 +60,12 @@ int main() {
 
 //pthread_t handle;
 //pthread_create(&handle, NULL, read_supersonic, NULL);
-  std::thread th(read_supersonic);
+//  std::thread th(read_supersonic);
 
   while (1) {
     read_linetrace();
-    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
-           line_sensors[2], line_sensors[3], distance_front.load());
+//    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
+//           line_sensors[2], line_sensors[3], distance_front.load());
 
     if (line_sensors[1] == 1) {
       left_m.run_pwm(PERIOD, PERIOD * 0.7, DRIVE_MODE::FORWARD);

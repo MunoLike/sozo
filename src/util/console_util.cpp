@@ -13,7 +13,7 @@
 #include "console_util.hpp"
 
 namespace utils {
-char kbhit(void) {
+int kbhit(void) {
   struct termios oldt, newt;
   int ch;
   int oldf;
@@ -32,7 +32,8 @@ char kbhit(void) {
 
   if (ch != EOF) {
     ungetc(ch, stdin);
-    return 1;
+    printf("%d\n", ch);
+    return ch;
   }
 
   return 0;

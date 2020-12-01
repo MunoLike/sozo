@@ -9,7 +9,7 @@
 #define UTIL_CONSOLE_UTIL_HPP_
 
 namespace utils {
-char kbhit(void);
+int kbhit(void);
 }
 
 #endif /* UTIL_CONSOLE_UTIL_HPP_ */
