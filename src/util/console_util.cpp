@@ -32,7 +32,6 @@ int kbhit(void) {
 
   if (ch != EOF) {
     ungetc(ch, stdin);
-    printf("%d\n", ch);
     return ch;
   }
 

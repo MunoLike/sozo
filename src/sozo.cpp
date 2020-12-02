@@ -52,7 +52,7 @@ void turn_control() {
 }
 
 int main() {
-  Motor left_m("P9_14", "P8_26", "P9_12");
+  Motor left_m("P9_14", "P9_12", "P8_26");
   Motor right_m("P9_22", "P8_18", "P8_16");
 
   init_linetrace();
@@ -64,18 +64,18 @@ int main() {
 
   while (1) {
     read_linetrace();
-//    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
-//           line_sensors[2], line_sensors[3], distance_front.load());
+    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
+           line_sensors[2], line_sensors[3], distance_front.load());
 
     if (line_sensors[1] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * 0.7, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * 0.9, DRIVE_MODE::FORWARD);
+      left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * 0.15, DRIVE_MODE::FORWARD);
     } else if (line_sensors[2] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * 0.9, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * 0.7, DRIVE_MODE::FORWARD);
+      left_m.run_pwm(PERIOD, PERIOD * 0.15, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
     } else {
-      left_m.run_pwm(PERIOD, PERIOD * 0.7, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * 0.7, DRIVE_MODE::FORWARD);
+      left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
     }
 
     if (utils::kbhit() == 'q') {
