@@ -55,13 +55,17 @@ int main() {
   Motor left_m("P9_14", "P8_26", "P9_12");
   Motor right_m("P9_22", "P8_18", "P8_16");
 
+  //実行開始用スイッチ
+  GPIO::GPIO run_sw("P8_15");
+
   init_linetrace();
   init_supersonic();
 
-//pthread_t handle;
-//pthread_create(&handle, NULL, read_supersonic, NULL);
   std::thread th(read_supersonic);
 
+
+  while(!run_sw.getValue());
+  sleep(1);
   while (1) {
     read_linetrace();
     printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
