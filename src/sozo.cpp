@@ -59,15 +59,19 @@ int main() {
   init_linetrace();
   init_supersonic();
 
-//pthread_t handle;
-//pthread_create(&handle, NULL, read_supersonic, NULL);
-//  std::thread th(read_supersonic);
+  std::thread th(read_supersonic);
 
-  auto start = std::chrono::system_clock::now();
+  sleep(1);
   while (1) {
     read_linetrace();
     printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
            line_sensors[2], line_sensors[3], distance_front.load());
+
+    if (distance_front.load() <= 100) {
+      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
+      right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
+      break;
+    }
 
     if (line_sensors[1] == 1) {
       left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
@@ -78,14 +82,6 @@ int main() {
     } else {
       left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
       right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
-    }
-
-    //時刻比較 5秒後に停止するため
-    auto now = std::chrono::system_clock::now();
-    double elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
-
-    if (elapsed_time >= 5) {
-      break;
     }
 
     if (utils::kbhit() == 'q') {
