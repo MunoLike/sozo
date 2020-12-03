@@ -1,4 +1,5 @@
 #include <thread>
+#include <chrono>
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
@@ -62,6 +63,7 @@ int main() {
 //pthread_create(&handle, NULL, read_supersonic, NULL);
 //  std::thread th(read_supersonic);
 
+  auto start = std::chrono::system_clock::now();
   while (1) {
     read_linetrace();
     printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
@@ -76,6 +78,14 @@ int main() {
     } else {
       left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
       right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+    }
+
+    //時刻比較 5秒後に停止するため
+    auto now = std::chrono::system_clock::now();
+    double elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(now - start).count();
+
+    if (elapsed_time >= 5) {
+      break;
     }
 
     if (utils::kbhit() == 'q') {
