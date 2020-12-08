@@ -67,15 +67,15 @@ int turn_control() {
 int main() {
 
   //実行開始用スイッチ
-  GPIO::GPIO run_sw("P8_15");
+  //GPIO::GPIO run_sw("P8_15");
 
   init_linetrace();
   init_supersonic();
 
   std::thread th(read_supersonic);
 
-  while (!run_sw.getValue())
-    ;
+  // while (!run_sw.getValue())
+  ;
   sleep(1);
   while (1) {
     read_linetrace();
@@ -83,14 +83,14 @@ int main() {
            line_sensors[2], line_sensors[3], distance_front.load());
 
     if (line_sensors[1] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * 0.15, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+      left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * 0.4, DRIVE_MODE::FORWARD);
     } else if (line_sensors[2] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * 0.15, DRIVE_MODE::FORWARD);
-    } else {
-      left_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+      left_m.run_pwm(PERIOD, PERIOD * 0.4, DRIVE_MODE::FORWARD);
       right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
+    } else {
+      left_m.run_pwm(PERIOD, PERIOD * 0.4, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * 0.4, DRIVE_MODE::FORWARD);
     }
 
     //turn_control();
