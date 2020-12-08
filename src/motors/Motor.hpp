@@ -25,6 +25,7 @@ class Motor {
 
  public:
   Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2);
+  Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2, double gain);
   virtual ~Motor();
   void run_pwm(int period, int duty, DRIVE_MODE drive_mode);
 
@@ -33,6 +34,7 @@ class Motor {
   GPIO::GPIO pwm_out;
   GPIO::GPIO dir_cont[2];
   int period, duty;
+  double gain;
 };
 
 #endif /* MOTORS_MOTOR_HPP_ */

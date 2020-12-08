@@ -14,11 +14,17 @@
 
 Motor::Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2)
     :
+    Motor(pwmpin, dir_cont1, dir_cont2, 1.0) {
+}
+
+Motor::Motor(const std::string pwmpin, const std::string dir_cont1, const std::string dir_cont2, double gain)
+    :
     pwm_pin_name(pwmpin),
     pwm_out(GPIO::GPIO(pwmpin)),
     dir_cont { GPIO::GPIO(dir_cont1), GPIO::GPIO(dir_cont2) },
     period(0),
-    duty(0) {
+    duty(0),
+    gain(gain) {
 
   //OUTPUTに設定
   pwm_out.setDirection(GPIO::OUTPUT);
@@ -49,22 +55,23 @@ Motor::Motor(const std::string pwmpin, const std::string dir_cont1, const std::s
   pwm_run << 0;
   pwm_run.close();
 
-//  /*PWM周期の設定*/
-//  ここでは設定しない
-//  /*PWM極性の設定*/
+  //  /*PWM周期の設定*/
+  //  ここでは設定しない
+  //  /*PWM極性の設定*/
 
   std::ofstream pwm_polarity(pwm_setting_dir + "polarity");
   pwm_polarity << 0;
   pwm_polarity.close();
 
-//  /*PWM　ON状態時間の初期化*/
+  //  /*PWM　ON状態時間の初期化*/
 
   std::ofstream pwm_duty(pwm_setting_dir + "duty");
   pwm_duty << 0;
   pwm_duty.close();
 
-//  /*PWM出力の開始*/
-// ここではONにしない
+  //  /*PWM出力の開始*/
+  // ここではONにしない
+
 }
 
 void Motor::run_pwm(int period, int duty, DRIVE_MODE drive_mode) {
@@ -79,7 +86,7 @@ void Motor::run_pwm(int period, int duty, DRIVE_MODE drive_mode) {
   pwm_period.close();
 
   std::ofstream pwm_duty(pwm_setting_dir + "duty");
-  pwm_duty << duty;
+  pwm_duty << ((int) (duty * gain));
   pwm_duty.close();
 
   std::ofstream pwm_run(pwm_setting_dir + "run");
