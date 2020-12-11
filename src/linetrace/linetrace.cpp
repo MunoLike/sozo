@@ -1,5 +1,8 @@
 #include "linetrace.hpp"
 
+#include <atomic>
+#include <array>
+
 #include <stdio.h>
 #include <unistd.h>
 
@@ -8,7 +11,7 @@
 #define gpio2 49//P9_23
 #define gpio3 115//P9_27
 
-int line_sensors[4];
+std::array<std::atomic<int>, 4> line_sensors;
 
 void init_linetrace() {
   FILE *fp;
@@ -82,16 +85,29 @@ void read_linetrace() {
   fp3 = fopen(path3, "r");
   //valueファイルを開き，出力値を書き込む
 
-  fscanf(fp0, "%d", &line_sensors[0]);
+  int tmp[4];
 
-  fscanf(fp1, "%d", &line_sensors[1]);
+  fscanf(fp0, "%d", &tmp[0]);
 
-  fscanf(fp2, "%d", &line_sensors[2]);
+  fscanf(fp1, "%d", &tmp[1]);
 
-  fscanf(fp3, "%d", &line_sensors[3]);
+  fscanf(fp2, "%d", &tmp[2]);
+
+  fscanf(fp3, "%d", &tmp[3]);
+
+  for (auto i = 0; i < 4; i++) {
+    line_sensors[i] = tmp[i];
+  }
 
   fclose(fp0);
   fclose(fp1);
   fclose(fp2);
   fclose(fp3);
+}
+
+void read_line_th() {
+  while (true) {
+    read_linetrace();
+    usleep(10000);
+  }
 }

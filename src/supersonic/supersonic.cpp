@@ -1,6 +1,6 @@
-#include <atomic>
-
 #include "supersonic.hpp"
+
+#include <atomic>
 
 #define gpio 27//P8_17
 

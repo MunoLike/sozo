@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <fmt/core.h>
 
 #include "linetrace/linetrace.hpp"
 #include "supersonic/supersonic.hpp"
 #include "util/console_util.hpp"
 #include "motors/Motor.hpp"
-//#include "soket/client.hpp"
 
 #define PERIOD (10000000)
 Motor right_m("P9_14", "P9_12", "P8_26");
@@ -87,14 +87,18 @@ int main() {
   init_linetrace();
   init_supersonic();
 
-  std::thread th(read_supersonic);
+  std::thread th_sonic(read_supersonic);
+  std::thread th_line(read_line_th);
+
   sleep(1);  //超音波センサが０を返すので一秒待つ
   while (1) {
     read_linetrace();
-    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1], line_sensors[2], line_sensors[3],
-           distance_front.load());
 
-    if (distance_front.load() <= 200) {
+    //明示的にコピー可能なint型を渡してあげる必要がある。std::atomicはコピー不可のため
+    printf("%d %d %d %d %d[mm]\r", line_sensors[0].load(), line_sensors[1].load(), line_sensors[2].load(),
+           line_sensors[3].load(), distance_front.load());
+
+    if (distance_front <= 200) {
       left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
       right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
       break;

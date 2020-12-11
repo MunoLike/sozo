@@ -2,13 +2,11 @@
  * com.hpp
  *
  *  Created on: 2020/12/10
- *      Author: User
+ *      Author: MunoLike
  */
 
-namespace Control{
+namespace Control {
 void getCoords();
 
 }
-
-
 
