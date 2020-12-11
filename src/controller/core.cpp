@@ -9,14 +9,16 @@
 #include "core.hpp"
 #include "com.hpp"
 
-namespace Control{
-  std::thread recv_th(getCoords);
+namespace Control {
+std::thread *recv_th = NULL;
 
-  void setup(){
-
+void setup() {
+  if (recv_th == NULL) {
+    recv_th = new std::thread(getCoords);
   }
+}
 
-  void event_loop(){
+void event_loop() {
 
-  }
+}
 }

@@ -91,8 +91,8 @@ int main() {
   sleep(1);  //超音波センサが０を返すので一秒待つ
   while (1) {
     read_linetrace();
-    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1],
-           line_sensors[2], line_sensors[3], distance_front.load());
+    printf("%d %d %d %d %d[mm]\r", line_sensors[0], line_sensors[1], line_sensors[2], line_sensors[3],
+           distance_front.load());
 
     if (distance_front.load() <= 200) {
       left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
