@@ -108,6 +108,6 @@ void read_linetrace() {
 void read_line_th() {
   while (true) {
     read_linetrace();
-    usleep(10000);
+    //usleep(10000);
   }
 }

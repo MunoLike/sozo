@@ -108,7 +108,7 @@ void read_supersonic() {
       distance[i] = Ion / 61 * 10;
       usleep(50000);
     }
-    SimSelSort(distance, 7);
+    SimSelSort(distance, 3);
   }
 }
 
