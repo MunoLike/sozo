@@ -18,7 +18,7 @@ void init_linetrace() {
 
   char path0[100], path1[100], path2[100], path3[100];
 
-  printf("GPIO番号： %d %d %d %d\n", gpio0, gpio1, gpio2, gpio3);
+  //printf("GPIO番号： %d %d %d %d\n", gpio0, gpio1, gpio2, gpio3);
 
   ///////////////////////////////////////////////////////////////////////
 

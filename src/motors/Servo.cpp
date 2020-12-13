@@ -5,8 +5,6 @@
  *      Author: MunoLike
  */
 
-
-
 /*
  * motor.cpp
  *
@@ -21,12 +19,11 @@
 #include "../util/fileutil.hpp"
 #include "Servo.hpp"
 
-
 Servo::Servo(const std::string pwmpin)
     :
     pwm_pin_name(pwmpin),
     pwm_out(GPIO::GPIO(pwmpin)),
-    angle(0){
+    angle(0) {
 
   //OUTPUTに設定
   pwm_out.setDirection(GPIO::OUTPUT);
@@ -77,17 +74,17 @@ Servo::Servo(const std::string pwmpin)
 
 }
 
-void Servo::write(int angle) {
-  this->angle = angle;
+void Servo::write(int angle_in) {
+  this->angle = angle_in;
+  int ns = (int) (((19.0 / 180) * (this->angle) + 5) * 100000);
 
   std::string pwm_setting_dir = utils::unclear_pathto_abs(
       fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwm_pin_name));
 
   std::ofstream pwm_duty(pwm_setting_dir + "duty");
-  pwm_duty << (int)(((19/180)*(angle)+5)*100000);
+  pwm_duty << ns;
   pwm_duty.close();
-  printf("\n%d\n", (int)(((19/180)*(angle)+5)*100000));
-
+  printf("\n%d\n", ns);
 
   std::ofstream pwm_run(pwm_setting_dir + "run");
   pwm_run << 1;
@@ -98,7 +95,4 @@ void Servo::write(int angle) {
 Servo::~Servo() {
 
 }
-
-
-
 
