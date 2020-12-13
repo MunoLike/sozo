@@ -8,10 +8,12 @@
 #include "supersonic/supersonic.hpp"
 #include "util/console_util.hpp"
 #include "motors/Motor.hpp"
+#include "motors/Servo.hpp"
 
 #define PERIOD (10000000)
 Motor right_m("P9_14", "P9_12", "P8_26");
 Motor left_m("P9_22", "P8_16", "P8_18", 0.65);
+Servo waki("P8_13");
 
 char flag = 'N';
 float turn = 0.22;
@@ -118,23 +120,28 @@ int main() {
       right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
       break;
     }
+
+    waki.write(0);
+    sleep(2);
+    waki.write(180);
+    sleep(2);
+
+////    left_m.run_pwm(PERIOD, PERIOD * 0.2/0.65, DRIVE_MODE::BACKWARD);
+////      right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
 //
-//    left_m.run_pwm(PERIOD, PERIOD * 0.2/0.65, DRIVE_MODE::BACKWARD);
-//      right_m.run_pwm(PERIOD, PERIOD * 0.2, DRIVE_MODE::FORWARD);
-
-    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
-      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-    } else if (line_sensors[1] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
-
-    } else if (line_sensors[2] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-    }
-
-    turn_control();
+//    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
+//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    } else if (line_sensors[1] == 1) {
+//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+//
+//    } else if (line_sensors[2] == 1) {
+//      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    }
+//
+//    turn_control();
 
     if (utils::kbhit() == 'q') {
       break;

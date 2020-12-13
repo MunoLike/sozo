@@ -98,7 +98,7 @@ void Motor::run_pwm(int period, int duty, DRIVE_MODE drive_mode) {
 }
 
 Motor::~Motor() {
-  this->run_pwm(0, 0, DRIVE_MODE::FREE);
+  this->run_pwm(0, 0, DRIVE_MODE::STOP);
 
   std::string pwm_setting_dir = utils::unclear_pathto_abs(
       fmt::format("/sys/devices/ocp.*/pwm_test_{}.*/", this->pwm_pin_name));
