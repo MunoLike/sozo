@@ -55,7 +55,7 @@ Servo::Servo(const std::string pwmpin)
   //  /*PWM極性の設定*/
 
   std::ofstream pwm_polarity(pwm_setting_dir + "polarity");
-  pwm_polarity << 0;
+  pwm_polarity << 1;
   pwm_polarity.close();
 
   //  /*PWM period初期化*/
@@ -84,7 +84,6 @@ void Servo::write(int angle_in) {
   std::ofstream pwm_duty(pwm_setting_dir + "duty");
   pwm_duty << ns;
   pwm_duty.close();
-  printf("\n%d\n", ns);
 
   std::ofstream pwm_run(pwm_setting_dir + "run");
   pwm_run << 1;
