@@ -8,23 +8,19 @@
 #include "supersonic/supersonic.hpp"
 #include "util/console_util.hpp"
 #include "motors/Motor.hpp"
-#include "motors/Servo.hpp"
 
+#define MOTOR_GAIN (0.75)
 #define PERIOD (10000000)
 Motor right_m("P9_14", "P9_12", "P8_26");
-Motor left_m("P9_22", "P8_16", "P8_18", 0.65);
-Servo waki("P8_13");
+Motor left_m("P9_22", "P8_16", "P8_18", MOTOR_GAIN);
 
 char flag = 'N';
-float turn = 0.22;
-float max = 0.35;
-float low = 0.2;
-
-double angle_cnt = 0;
-bool servo_flag=false;
+float turn = 0.2;
+float max = 0.3;
+float low = 0.19;
 
 int turn_left() {
-  left_m.run_pwm(PERIOD, PERIOD * turn / 0.65, DRIVE_MODE::BACKWARD);
+  left_m.run_pwm(PERIOD, PERIOD * turn / MOTOR_GAIN, DRIVE_MODE::BACKWARD);
   right_m.run_pwm(PERIOD, PERIOD * turn, DRIVE_MODE::FORWARD);
 
   while (1) {
@@ -33,7 +29,8 @@ int turn_left() {
     }
   }
   while (1) {
-    left_m.run_pwm(PERIOD, PERIOD * turn * 0.7 / 0.65, DRIVE_MODE::BACKWARD);
+    left_m.run_pwm(PERIOD, PERIOD * turn * 0.7 / MOTOR_GAIN,
+                   DRIVE_MODE::BACKWARD);
     right_m.run_pwm(PERIOD, PERIOD * turn * 0.7, DRIVE_MODE::FORWARD);
     if (line_sensors[1] == 0) {
       left_m.run_pwm(PERIOD, 0, DRIVE_MODE::STOP);
@@ -42,7 +39,6 @@ int turn_left() {
       break;
     }
   }
-  //書き込め！0番出るまで待て！
 }
 
 int turn_right() {
@@ -57,8 +53,8 @@ int turn_right() {
     left_m.run_pwm(PERIOD, PERIOD * turn * 0.7, DRIVE_MODE::FORWARD);
     right_m.run_pwm(PERIOD, PERIOD * turn * 0.7, DRIVE_MODE::BACKWARD);
     if (line_sensors[2] == 0) {
-      left_m.run_pwm(PERIOD, 0, DRIVE_MODE::BACKWARD);
-      right_m.run_pwm(PERIOD, 0, DRIVE_MODE::BACKWARD);
+      left_m.run_pwm(PERIOD, 0, DRIVE_MODE::STOP);
+      right_m.run_pwm(PERIOD, 0, DRIVE_MODE::STOP);
       usleep(300000);
       break;
     }
@@ -78,9 +74,6 @@ int turn_control() {
     right_m.run_pwm(PERIOD, PERIOD * max * 0.5, DRIVE_MODE::FORWARD);
     while (line_sensors[0] == 0)
       ;
-//    left_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::STOP);
-//    right_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::STOP);
-//    usleep(500000);
     turn_left();
     flag = 'N';
   } else if (line_sensors[3] == 0) {
@@ -89,9 +82,6 @@ int turn_control() {
 
     while (line_sensors[3] == 0)
       ;
-//    left_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::STOP);
-//    right_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::STOP);
-//    usleep(500000);
     turn_right();
     flag = 'N';
   }
@@ -107,11 +97,12 @@ int main() {
 
   std::thread th_sonic(read_supersonic);
   std::thread th_line(read_line_th);
-
-  left_m.run_pwm(PERIOD, PERIOD * 0.05 / 0.65, DRIVE_MODE::FORWARD);
+  left_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
   right_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
   sleep(1);  //超音波センサが０を返すので一秒待つ
-
+//  left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//  right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//  usleep(500000);
   while (1) {
 
     //明示的にコピー可能なint型を渡してあげる必要がある。std::atomicはコピー不可のため
@@ -119,12 +110,14 @@ int main() {
            line_sensors[1].load(), line_sensors[2].load(),
            line_sensors[3].load(), distance_front.load());
 
-    if (distance_front <= 50) {
-      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
-      right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
-      break;
-    }
+//    if (distance_front <= 20) {
+//      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
+//      right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
+//      break;
+//    }
 
+//    left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
 
     if (line_sensors[1] == 0 && line_sensors[2] == 0) {
       left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
@@ -140,22 +133,9 @@ int main() {
 
     turn_control();
 
-    /*servo*/
-    waki.write(angle_cnt);
-
-    if(angle_cnt >= 180){
-      servo_flag=false;
-    }else if(angle_cnt <= 0){
-      servo_flag =true;
-    }
-
-    if(servo_flag){
-      angle_cnt += 0.4;
-    }else{
-      angle_cnt -= 0.4;
-    }
-
     if (utils::kbhit() == 'q') {
+      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
+      right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
       break;
     }
   }
