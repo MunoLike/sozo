@@ -8,16 +8,20 @@
 #include "supersonic/supersonic.hpp"
 #include "util/console_util.hpp"
 #include "motors/Motor.hpp"
+#include "motors/Servo.hpp"
 
-#define MOTOR_GAIN (0.75)
-#define PERIOD (10000000)
+#define MOTOR_GAIN (0.95)
+#define PERIOD (1000000)
 Motor right_m("P9_14", "P9_12", "P8_26");
 Motor left_m("P9_22", "P8_16", "P8_18", MOTOR_GAIN);
+Servo waki("P8_13");
 
 char flag = 'N';
-float turn = 0.2;
-float max = 0.3;
-float low = 0.19;
+float turn = 0.4;
+float max = 0.5;
+float low = 0.3;
+
+float servo_cnt = 0;
 
 int turn_left() {
   left_m.run_pwm(PERIOD, PERIOD * turn / MOTOR_GAIN, DRIVE_MODE::BACKWARD);
@@ -110,7 +114,7 @@ int main() {
            line_sensors[1].load(), line_sensors[2].load(),
            line_sensors[3].load(), distance_front.load());
 
-//    if (distance_front <= 20) {
+//    if (distance_front <= 70) {
 //      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
 //      right_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
 //      break;
@@ -118,6 +122,9 @@ int main() {
 
 //    left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
 //      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//
+//    left_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::FORWARD);
+//    right_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::FORWARD);
 
     if (line_sensors[1] == 0 && line_sensors[2] == 0) {
       left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
@@ -132,6 +139,9 @@ int main() {
     }
 
     turn_control();
+//
+//    //servo
+//    if(servo == 180)
 
     if (utils::kbhit() == 'q') {
       left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
