@@ -22,6 +22,7 @@ float max = 0.5;
 float low = 0.3;
 
 float servo_cnt = 0;
+bool servo_isup=true;
 
 int turn_left() {
   left_m.run_pwm(PERIOD, PERIOD * turn / MOTOR_GAIN, DRIVE_MODE::BACKWARD);
@@ -103,16 +104,13 @@ int main() {
   std::thread th_line(read_line_th);
   left_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
   right_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
-  sleep(1);  //超音波センサが０を返すので一秒待つ
-//  left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//  right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//  usleep(500000);
+  sleep(1);
   while (1) {
 
     //明示的にコピー可能なint型を渡してあげる必要がある。std::atomicはコピー不可のため
-    printf("%d %d %d %d %d[mm]\r", line_sensors[0].load(),
-           line_sensors[1].load(), line_sensors[2].load(),
-           line_sensors[3].load(), distance_front.load());
+//    printf("%d %d %d %d %d[mm]\r", line_sensors[0].load(),
+//           line_sensors[1].load(), line_sensors[2].load(),
+//           line_sensors[3].load(), distance_front.load());
 
 //    if (distance_front <= 70) {
 //      left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
@@ -123,25 +121,37 @@ int main() {
 //    left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
 //      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
 //
-//    left_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::FORWARD);
-//    right_m.run_pwm(PERIOD, PERIOD, DRIVE_MODE::FORWARD);
+    left_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
+    right_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
 
-    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
-      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-    } else if (line_sensors[1] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+//    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
+//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    } else if (line_sensors[1] == 1) {
+//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+//
+//    } else if (line_sensors[2] == 1) {
+//      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    }
+//
+//    turn_control();
 
-    } else if (line_sensors[2] == 1) {
-      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
-      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    servo
+    if(servo_cnt > 180){
+      servo_isup=false;
+    }else if(servo_cnt<0){
+      servo_isup=true;
     }
 
-    turn_control();
-//
-//    //servo
-//    if(servo == 180)
+    if(servo_isup){
+      servo_cnt+=1;
+    }else{
+      servo_cnt-=1;
+    }
+
+    waki.write(servo_cnt);
 
     if (utils::kbhit() == 'q') {
       left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
