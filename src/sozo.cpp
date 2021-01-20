@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <fmt/core.h>
 
+#include "controller/waki_controller.hpp"
 #include "linetrace/linetrace.hpp"
 #include "supersonic/supersonic.hpp"
 #include "util/console_util.hpp"
@@ -20,9 +21,6 @@ char flag = 'N';
 float turn = 0.4;
 float max = 0.5;
 float low = 0.3;
-
-float servo_cnt = 0;
-bool servo_isup=true;
 
 int turn_left() {
   left_m.run_pwm(PERIOD, PERIOD * turn / MOTOR_GAIN, DRIVE_MODE::BACKWARD);
@@ -99,9 +97,11 @@ int main() {
 
   init_linetrace();
   init_supersonic();
+  Control::init_waki(&waki);
 
   std::thread th_sonic(read_supersonic);
   std::thread th_line(read_line_th);
+  std::thread th_waki(Control::waki_move);
   left_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
   right_m.run_pwm(PERIOD, PERIOD * 0.05, DRIVE_MODE::FORWARD);
   sleep(1);
@@ -118,40 +118,23 @@ int main() {
 //      break;
 //    }
 
-//    left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+//    left_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
+//    right_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
 //
-    left_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
-    right_m.run_pwm(PERIOD, 0, DRIVE_MODE::FORWARD);
 
-//    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
-//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//    } else if (line_sensors[1] == 1) {
-//      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
-//
-//    } else if (line_sensors[2] == 1) {
-//      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
-//      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
-//    }
-//
-//    turn_control();
+    if (line_sensors[1] == 0 && line_sensors[2] == 0) {
+      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+    } else if (line_sensors[1] == 1) {
+      left_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
 
-//    servo
-    if(servo_cnt > 180){
-      servo_isup=false;
-    }else if(servo_cnt<0){
-      servo_isup=true;
+    } else if (line_sensors[2] == 1) {
+      left_m.run_pwm(PERIOD, PERIOD * low, DRIVE_MODE::FORWARD);
+      right_m.run_pwm(PERIOD, PERIOD * max, DRIVE_MODE::FORWARD);
     }
 
-    if(servo_isup){
-      servo_cnt+=1;
-    }else{
-      servo_cnt-=1;
-    }
-
-    waki.write(servo_cnt);
+    turn_control();
 
     if (utils::kbhit() == 'q') {
       left_m.run_pwm(PERIOD, PERIOD * 0, DRIVE_MODE::STOP);
